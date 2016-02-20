@@ -17,13 +17,23 @@ namespace SmartDimmerTestTool
         {
             InitializeComponent();
         }
+        public struct SerialSetting_t
+        {
+            public string COMPort;
+            public string Baudrate;
+            public string DataSize;
+            public StopBits StopBit;
+            public Parity parity;
+        };
 
-        public SerialSetting(ref SerialPort serial)
+        public SerialSetting_t serialSetting;
+
+        private void SerialSetting_Load(object sender, EventArgs e)
         {
 
         }
 
-        private void SerialSetting_Load(object sender, EventArgs e)
+        private void SerialConnect_bt_Click(object sender, EventArgs e)
         {
 
         }

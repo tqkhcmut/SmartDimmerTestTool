@@ -152,9 +152,11 @@
             this.SerialConnect_bt.TabIndex = 10;
             this.SerialConnect_bt.Text = "OK";
             this.SerialConnect_bt.UseVisualStyleBackColor = true;
+            this.SerialConnect_bt.Click += new System.EventHandler(this.SerialConnect_bt_Click);
             // 
             // SerialCancel_bt
             // 
+            this.SerialCancel_bt.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.SerialCancel_bt.Location = new System.Drawing.Point(117, 158);
             this.SerialCancel_bt.Name = "SerialCancel_bt";
             this.SerialCancel_bt.Size = new System.Drawing.Size(75, 23);
