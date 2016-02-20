@@ -66,6 +66,12 @@ namespace SmartDimmerTestTool
                                 byte[] buffer = new byte[COMSerialPort.BytesToRead];
                                 COMSerialPort.Read(buffer, 0, COMSerialPort.BytesToRead);
                                 appendMsg(Bs2str(buffer));
+
+                                if (buffer[0] == 0x11 && buffer[1] == 0x03 && buffer[2] == 0x02)
+                                {
+                                    byte[] tmp = {buffer[3], buffer[4], buffer[5], buffer[6]};
+                                    appendFoundID(Bs2str(tmp));
+                                }
                             }
                         }
 
@@ -74,6 +80,7 @@ namespace SmartDimmerTestTool
                 }
                 catch (Exception err)
                 {
+                    serialAccess.ReleaseMutex();
                     Debug.WriteLine(err.Message);
                 }
                 Thread.Sleep(10);
@@ -163,16 +170,34 @@ namespace SmartDimmerTestTool
             }
         }
 
-        private void appendIDFromTime(string msg)
+        private Color FoundID_rt_color = Color.Green;
+        private Mutex FoundID_rtext_access = new Mutex();
+        private void appendFoundID(string msg)
         {
-            if (message_rtext.InvokeRequired)
+            if (FoundID_rtext_access.WaitOne())
             {
-                this.Invoke(new Action<string>(appendMsg), new object[] { msg });
-                return;
-            }
-            else
-            {
-                IDFromTime_tb.Text = msg;
+                if (FoundID_rtext.InvokeRequired)
+                {
+                    FoundID_rtext_access.ReleaseMutex();
+                    this.Invoke(new Action<string>(appendFoundID), new object[] { msg });
+                    return;
+                }
+                else
+                {
+                    FoundID_rtext.SelectionColor = FoundID_rt_color;
+                    FoundID_rtext.AppendText(msg + Environment.NewLine);
+                    FoundID_rtext.SelectionStart = FoundID_rtext.Text.Length;
+                    FoundID_rtext.ScrollToCaret();
+                    if (FoundID_rt_color == Color.Green)
+                    {
+                        FoundID_rt_color = Color.Blue;
+                    }
+                    else
+                    {
+                        FoundID_rt_color = Color.Green;
+                    }
+                }
+                FoundID_rtext_access.ReleaseMutex();
             }
         }
 
@@ -209,12 +234,12 @@ namespace SmartDimmerTestTool
                 {
                     appendMsg("Get Temperature: " + Bs2str(data));
                     COMSerialPort.Write(data, 0, data.Length);
-                    serialAccess.ReleaseMutex();
                 }
                 else
                 {
                     appendMsg(COMSerialPort.PortName + " is closed.");
                 }
+                serialAccess.ReleaseMutex();
             }
         }
 
@@ -243,12 +268,12 @@ namespace SmartDimmerTestTool
                 {
                     appendMsg("Get PCB Time: " + Bs2str(data));
                     COMSerialPort.Write(data, 0, data.Length);
-                    serialAccess.ReleaseMutex();
                 }
                 else
                 {
                     appendMsg(COMSerialPort.PortName + " is closed.");
                 }
+                serialAccess.ReleaseMutex();
             }
         }
 
@@ -277,12 +302,12 @@ namespace SmartDimmerTestTool
                 {
                     appendMsg("Get Power: " + Bs2str(data));
                     COMSerialPort.Write(data, 0, data.Length);
-                    serialAccess.ReleaseMutex();
                 }
                 else
                 {
                     appendMsg(COMSerialPort.PortName + " is closed.");
                 }
+                serialAccess.ReleaseMutex();
             }
         }
 
@@ -311,12 +336,12 @@ namespace SmartDimmerTestTool
                 {
                     appendMsg("Get ID: " + Bs2str(data));
                     COMSerialPort.Write(data, 0, data.Length);
-                    serialAccess.ReleaseMutex();
                 }
                 else
                 {
                     appendMsg(COMSerialPort.PortName + " is closed.");
                 }
+                serialAccess.ReleaseMutex();
             }
         }
 
@@ -345,12 +370,12 @@ namespace SmartDimmerTestTool
                 {
                     appendMsg("Manual Mode Off: " + Bs2str(data));
                     COMSerialPort.Write(data, 0, data.Length);
-                    serialAccess.ReleaseMutex();
                 }
                 else
                 {
                     appendMsg(COMSerialPort.PortName + " is closed.");
                 }
+                serialAccess.ReleaseMutex();
             }
         }
 
@@ -379,12 +404,12 @@ namespace SmartDimmerTestTool
                 {
                     appendMsg("Manual Mode On: " + Bs2str(data));
                     COMSerialPort.Write(data, 0, data.Length);
-                    serialAccess.ReleaseMutex();
                 }
                 else
                 {
                     appendMsg(COMSerialPort.PortName + " is closed.");
                 }
+                serialAccess.ReleaseMutex();
             }
         }
 
@@ -413,12 +438,12 @@ namespace SmartDimmerTestTool
                 {
                     appendMsg("Get Scheduler: " + Bs2str(data));
                     COMSerialPort.Write(data, 0, data.Length);
-                    serialAccess.ReleaseMutex();
                 }
                 else
                 {
                     appendMsg(COMSerialPort.PortName + " is closed.");
                 }
+                serialAccess.ReleaseMutex();
             }
         }
 
@@ -431,12 +456,12 @@ namespace SmartDimmerTestTool
                 {
                     appendMsg("Search Level 1: " + Bs2str(data));
                     COMSerialPort.Write(data, 0, data.Length);
-                    serialAccess.ReleaseMutex();
                 }
                 else
                 {
                     appendMsg(COMSerialPort.PortName + " is closed.");
                 }
+                serialAccess.ReleaseMutex();
             }
         }
 
@@ -449,12 +474,12 @@ namespace SmartDimmerTestTool
                 {
                     appendMsg("Search Level 2: " + Bs2str(data));
                     COMSerialPort.Write(data, 0, data.Length);
-                    serialAccess.ReleaseMutex();
                 }
                 else
                 {
                     appendMsg(COMSerialPort.PortName + " is closed.");
                 }
+                serialAccess.ReleaseMutex();
             }
         }
 
@@ -467,12 +492,12 @@ namespace SmartDimmerTestTool
                 {
                     appendMsg("Search Level 3: " + Bs2str(data));
                     COMSerialPort.Write(data, 0, data.Length);
-                    serialAccess.ReleaseMutex();
                 }
                 else
                 {
                     appendMsg(COMSerialPort.PortName + " is closed.");
                 }
+                serialAccess.ReleaseMutex();
             }
         }
 
@@ -501,12 +526,12 @@ namespace SmartDimmerTestTool
                 {
                     appendMsg("Unpair Device: " + Bs2str(data));
                     COMSerialPort.Write(data, 0, data.Length);
-                    serialAccess.ReleaseMutex();
                 }
                 else
                 {
                     appendMsg(COMSerialPort.PortName + " is closed.");
                 }
+                serialAccess.ReleaseMutex();
             }
         }
 
@@ -535,12 +560,12 @@ namespace SmartDimmerTestTool
                 {
                     appendMsg("Pair Device: " + Bs2str(data));
                     COMSerialPort.Write(data, 0, data.Length);
-                    serialAccess.ReleaseMutex();
                 }
                 else
                 {
                     appendMsg(COMSerialPort.PortName + " is closed.");
                 }
+                serialAccess.ReleaseMutex();
             }
         }
 
@@ -567,12 +592,12 @@ namespace SmartDimmerTestTool
                 {
                     appendMsg("Set ID To PCB: " + Bs2str(data));
                     COMSerialPort.Write(data, 0, data.Length);
-                    serialAccess.ReleaseMutex();
                 }
                 else
                 {
                     appendMsg(COMSerialPort.PortName + " is closed.");
                 }
+                serialAccess.ReleaseMutex();
             }
         }
 
@@ -593,7 +618,7 @@ namespace SmartDimmerTestTool
                 Array.Reverse(IDb);
             }
             appendMsg(Bs2str(IDb));
-            appendIDFromTime(Bs2str(IDb));
+            IDFromTime_tb.Text = Bs2str(IDb);
         }
     }
 }

@@ -63,8 +63,8 @@
             this.IDFromTime_tb = new System.Windows.Forms.TextBox();
             this.SetIDToPCB_bt = new System.Windows.Forms.Button();
             this.FoundID_rtext = new System.Windows.Forms.RichTextBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.TargetID_cb = new System.Windows.Forms.ComboBox();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -72,6 +72,7 @@
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -116,6 +117,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.groupBox5);
             this.panel1.Controls.Add(this.groupBox4);
             this.panel1.Controls.Add(this.groupBox3);
             this.panel1.Controls.Add(this.groupBox2);
@@ -239,10 +241,6 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.TargetID_cb);
-            this.groupBox2.Controls.Add(this.DevPair_bt);
-            this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Controls.Add(this.DevUnpair_bt);
             this.groupBox2.Controls.Add(this.GetScheduler_bt);
             this.groupBox2.Controls.Add(this.ManualModeOn_bt);
             this.groupBox2.Controls.Add(this.ManualModeOff_bt);
@@ -254,9 +252,9 @@
             this.groupBox2.Controls.Add(this.PCBTime_tb);
             this.groupBox2.Controls.Add(this.GetID_bt);
             this.groupBox2.Controls.Add(this.Temp_tb);
-            this.groupBox2.Location = new System.Drawing.Point(12, 3);
+            this.groupBox2.Location = new System.Drawing.Point(12, 63);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(333, 262);
+            this.groupBox2.Size = new System.Drawing.Size(387, 202);
             this.groupBox2.TabIndex = 8;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Functions Test";
@@ -283,7 +281,7 @@
             // 
             // GetScheduler_bt
             // 
-            this.GetScheduler_bt.Location = new System.Drawing.Point(6, 193);
+            this.GetScheduler_bt.Location = new System.Drawing.Point(222, 19);
             this.GetScheduler_bt.Name = "GetScheduler_bt";
             this.GetScheduler_bt.Size = new System.Drawing.Size(104, 23);
             this.GetScheduler_bt.TabIndex = 10;
@@ -294,12 +292,14 @@
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.FoundID_rtext);
+            this.groupBox3.Controls.Add(this.DevPair_bt);
             this.groupBox3.Controls.Add(this.SearchL3_bt);
             this.groupBox3.Controls.Add(this.SearchL2_bt);
+            this.groupBox3.Controls.Add(this.DevUnpair_bt);
             this.groupBox3.Controls.Add(this.SearchL1_bt);
-            this.groupBox3.Location = new System.Drawing.Point(351, 3);
+            this.groupBox3.Location = new System.Drawing.Point(405, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(421, 111);
+            this.groupBox3.Size = new System.Drawing.Size(367, 323);
             this.groupBox3.TabIndex = 9;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Address Search";
@@ -336,7 +336,7 @@
             // 
             // DevUnpair_bt
             // 
-            this.DevUnpair_bt.Location = new System.Drawing.Point(116, 135);
+            this.DevUnpair_bt.Location = new System.Drawing.Point(6, 106);
             this.DevUnpair_bt.Name = "DevUnpair_bt";
             this.DevUnpair_bt.Size = new System.Drawing.Size(104, 23);
             this.DevUnpair_bt.TabIndex = 3;
@@ -346,7 +346,7 @@
             // 
             // DevPair_bt
             // 
-            this.DevPair_bt.Location = new System.Drawing.Point(116, 164);
+            this.DevPair_bt.Location = new System.Drawing.Point(6, 135);
             this.DevPair_bt.Name = "DevPair_bt";
             this.DevPair_bt.Size = new System.Drawing.Size(104, 23);
             this.DevPair_bt.TabIndex = 4;
@@ -361,7 +361,7 @@
             this.groupBox4.Controls.Add(this.GetIDFromTime_bt);
             this.groupBox4.Location = new System.Drawing.Point(12, 271);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(333, 55);
+            this.groupBox4.Size = new System.Drawing.Size(387, 55);
             this.groupBox4.TabIndex = 10;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "ID Setting";
@@ -387,7 +387,7 @@
             // 
             this.SetIDToPCB_bt.Location = new System.Drawing.Point(222, 19);
             this.SetIDToPCB_bt.Name = "SetIDToPCB_bt";
-            this.SetIDToPCB_bt.Size = new System.Drawing.Size(104, 23);
+            this.SetIDToPCB_bt.Size = new System.Drawing.Size(159, 23);
             this.SetIDToPCB_bt.TabIndex = 2;
             this.SetIDToPCB_bt.Text = "Set ID To PCB";
             this.SetIDToPCB_bt.UseVisualStyleBackColor = true;
@@ -400,28 +400,29 @@
             this.FoundID_rtext.Location = new System.Drawing.Point(116, 19);
             this.FoundID_rtext.Name = "FoundID_rtext";
             this.FoundID_rtext.ReadOnly = true;
-            this.FoundID_rtext.Size = new System.Drawing.Size(299, 81);
+            this.FoundID_rtext.Size = new System.Drawing.Size(245, 298);
             this.FoundID_rtext.TabIndex = 5;
             this.FoundID_rtext.Text = "";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 238);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(52, 13);
-            this.label1.TabIndex = 11;
-            this.label1.Text = "Target ID";
             // 
             // TargetID_cb
             // 
             this.TargetID_cb.FormattingEnabled = true;
             this.TargetID_cb.Items.AddRange(new object[] {
             "FF FF FF FF"});
-            this.TargetID_cb.Location = new System.Drawing.Point(64, 235);
+            this.TargetID_cb.Location = new System.Drawing.Point(6, 19);
             this.TargetID_cb.Name = "TargetID_cb";
             this.TargetID_cb.Size = new System.Drawing.Size(121, 21);
             this.TargetID_cb.TabIndex = 12;
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.TargetID_cb);
+            this.groupBox5.Location = new System.Drawing.Point(12, 3);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(387, 54);
+            this.groupBox5.TabIndex = 13;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Target ID";
             // 
             // SmartDimmerTT
             // 
@@ -450,6 +451,7 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -492,7 +494,7 @@
         private System.Windows.Forms.Button GetIDFromTime_bt;
         private System.Windows.Forms.RichTextBox FoundID_rtext;
         private System.Windows.Forms.ComboBox TargetID_cb;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.GroupBox groupBox5;
     }
 }
 
