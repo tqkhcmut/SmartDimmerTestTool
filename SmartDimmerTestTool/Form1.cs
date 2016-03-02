@@ -9,9 +9,11 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
 using System.Diagnostics;
+using System.IO.Ports;
 
 namespace SmartDimmerTestTool
-{
+{    
+
     public partial class SmartDimmerTT : Form
     {
         public SmartDimmerTT()
@@ -30,10 +32,35 @@ namespace SmartDimmerTestTool
 
         private void settingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SerialSetting sSetting = new SerialSetting();
+            SerialSetting_t setting = new SerialSetting_t();
+            setting.Baudrate = 115200;
+            setting.StopBit = StopBits.One;
+            setting.DataBits = 8;
+            setting.Parity = Parity.None;
+            SerialSetting sSetting = new SerialSetting(setting);
             DialogResult res = sSetting.ShowDialog();
             if (res == DialogResult.OK)
             {
+                if (COMSerialPort.IsOpen)
+                {
+                    COMSerialPort.Close();
+                    appendMsg(COMSerialPort.PortName + " is closed.");
+                    COMSerialPort.BaudRate = setting.Baudrate;
+                    COMSerialPort.DataBits = setting.DataBits;
+                    COMSerialPort.StopBits = setting.StopBit;
+                    COMSerialPort.Parity = setting.Parity;
+                    COMSerialPort.PortName = setting.PortName;
+                    COMSerialPort.Open();
+                    appendMsg(COMSerialPort.PortName + " is opened.");
+                }
+                else
+                {
+                    COMSerialPort.BaudRate = setting.Baudrate;
+                    COMSerialPort.DataBits = setting.DataBits;
+                    COMSerialPort.StopBits = setting.StopBit;
+                    COMSerialPort.Parity = setting.Parity;
+                    COMSerialPort.PortName = setting.PortName;
+                }
                 
             }
             else
@@ -61,17 +88,20 @@ namespace SmartDimmerTestTool
                     {
                         if (COMSerialPort.IsOpen)
                         {
-                            if (COMSerialPort.BytesToRead > 0)
+                            if (COMSerialPort.BytesToRead > 8)
                             {
                                 byte[] buffer = new byte[COMSerialPort.BytesToRead];
                                 COMSerialPort.Read(buffer, 0, COMSerialPort.BytesToRead);
+                                serialAccess.ReleaseMutex();
                                 appendMsg(Bs2str(buffer));
 
                                 if (buffer[0] == 0x11 && buffer[1] == 0x03 && buffer[2] == 0x02)
                                 {
                                     byte[] tmp = {buffer[3], buffer[4], buffer[5], buffer[6]};
-                                    appendFoundID(Bs2str(tmp));
+                                    //appendFoundID(Bs2str(tmp));
+                                    dev_list.Add(tmp);
                                 }
+                                continue;
                             }
                         }
 
@@ -620,5 +650,248 @@ namespace SmartDimmerTestTool
             appendMsg(Bs2str(IDb));
             IDFromTime_tb.Text = Bs2str(IDb);
         }
+
+        private List<byte[]> dev_list = new List<byte[]>();
+        private void SearchAuto_bt_Click(object sender, EventArgs e)
+        {
+            FoundID_rtext.Text = "";
+            autoSearch.WorkerSupportsCancellation = true;
+            autoSearch.RunWorkerAsync();
+        }
+
+        private void autoSearch_DoWork(object sender, DoWorkEventArgs e)
+        {
+            dev_list.Clear();
+            List<byte[]> l1 = new List<byte[]>();
+            List<byte[]> l2 = new List<byte[]>();
+            List<byte[]> l3 = new List<byte[]>();
+            //FoundID_rtext.Text = "";
+            appendMsg("Auto Search Started."); 
+            byte[] tmp = { 0x10, 0x01, 0x02, 0xff, 0xff, 0xff, 0xff, 0x03, 0x02, 0xfe };
+            if (serialAccess.WaitOne())
+            {
+                if (COMSerialPort.IsOpen)
+                {
+                    appendMsg("Wakeup everyone.");
+                    COMSerialPort.Write(tmp, 0, tmp.Length);
+                }
+                else
+                {
+                    appendMsg(COMSerialPort.PortName + " is closed.");
+                }
+                serialAccess.ReleaseMutex();
+            }
+            Thread.Sleep(100);
+            // first send search 1 then wait 5s
+            byte[] data = { 0x11, 0x02, 0x02, 0xff, 0xff, 0xff, 0xff, 0x03, 0x01, 0xfe };
+            if (serialAccess.WaitOne())
+            {
+                if (COMSerialPort.IsOpen)
+                {
+                    appendMsg("Search Level 1: " + Bs2str(data));
+                    COMSerialPort.Write(data, 0, data.Length);
+                }
+                else
+                {
+                    appendMsg(COMSerialPort.PortName + " is closed.");
+                }
+                serialAccess.ReleaseMutex();
+            }
+            Thread.Sleep(8000); // at least 7320ms
+            l1 = dev_list.ToList();
+            dev_list.Clear();
+            foreach (byte[] bs in l1)
+            {
+                byte[] pair_data = { 0x10, 0x01, 0x02, 0xff, 0xff, 0xff, 0xff, 0x03, 0x01, 0xfe };
+                pair_data[3] = bs[0];
+                pair_data[4] = bs[1];
+                pair_data[5] = bs[2];
+                pair_data[6] = bs[3];
+                if (serialAccess.WaitOne())
+                {
+                    if (COMSerialPort.IsOpen)
+                    {
+                        appendMsg("Sleep well: " + Bs2str(bs));
+                        COMSerialPort.Write(pair_data, 0, pair_data.Length);
+                    }
+                    else
+                    {
+                        appendMsg(COMSerialPort.PortName + " is closed.");
+                    }
+                    serialAccess.ReleaseMutex();
+                }
+                appendFoundID(Bs2str(bs));
+                Thread.Sleep(100);
+            }
+            // second send search 2 then wait 5s
+            data[8] = 0x02;
+            if (serialAccess.WaitOne())
+            {
+                if (COMSerialPort.IsOpen)
+                {
+                    appendMsg("Search Level 2: " + Bs2str(data));
+                    COMSerialPort.Write(data, 0, data.Length);
+                }
+                else
+                {
+                    appendMsg(COMSerialPort.PortName + " is closed.");
+                }
+                serialAccess.ReleaseMutex();
+            }
+            Thread.Sleep(1000); // wait at least 192 ms
+            l2 = dev_list.ToList();
+            dev_list.Clear();
+            foreach (byte[] bs in l2)
+            {
+                byte[] pair_data = { 0x10, 0x01, 0x02, 0xff, 0xff, 0xff, 0xff, 0x03, 0x01, 0xfe };
+                pair_data[3] = bs[0];
+                pair_data[4] = bs[1];
+                pair_data[5] = bs[2];
+                pair_data[6] = bs[3];
+                if (serialAccess.WaitOne())
+                {
+                    if (COMSerialPort.IsOpen)
+                    {
+                        appendMsg("Sleep well: " + Bs2str(bs));
+                        COMSerialPort.Write(pair_data, 0, pair_data.Length);
+                    }
+                    else
+                    {
+                        appendMsg(COMSerialPort.PortName + " is closed.");
+                    }
+                    serialAccess.ReleaseMutex();
+                }
+                appendFoundID(Bs2str(bs));
+                Thread.Sleep(100);
+            }
+            // last send search 3
+            data[8] = 0x03;
+            if (serialAccess.WaitOne())
+            {
+                if (COMSerialPort.IsOpen)
+                {
+                    appendMsg("Search Level 3: " + Bs2str(data));
+                    COMSerialPort.Write(data, 0, data.Length);
+                }
+                else
+                {
+                    appendMsg(COMSerialPort.PortName + " is closed.");
+                }
+                serialAccess.ReleaseMutex();
+            }
+            Thread.Sleep(3000); // wait at least 2400 ms
+            l3 = dev_list.ToList();
+            dev_list.Clear();
+            foreach (byte[] bs in l3)
+            {
+                byte[] pair_data = { 0x10, 0x01, 0x02, 0xff, 0xff, 0xff, 0xff, 0x03, 0x01, 0xfe };
+                pair_data[3] = bs[0];
+                pair_data[4] = bs[1];
+                pair_data[5] = bs[2];
+                pair_data[6] = bs[3];
+                if (serialAccess.WaitOne())
+                {
+                    if (COMSerialPort.IsOpen)
+                    {
+                        appendMsg("Sleep well: " + Bs2str(bs));
+                        COMSerialPort.Write(pair_data, 0, pair_data.Length);
+                    }
+                    else
+                    {
+                        appendMsg(COMSerialPort.PortName + " is closed.");
+                    }
+                    serialAccess.ReleaseMutex();
+                }
+                appendFoundID(Bs2str(bs));
+                Thread.Sleep(10);
+            }
+
+            appendMsg("Auto Search Finished.");
+        }
+
+        private void DimmingBar_Scroll(object sender, ScrollEventArgs e)
+        {
+            byte[] data = { 0x04, 0x01, 0x02, 0xff, 0xff, 0xff, 0xff, 0x03, 0x00, 0xfe };
+            string[] ss = TargetID_cb.Text.Split(' ');
+            try
+            {
+                if (data.Length < 4)
+                    throw new Exception("Not enough ID length.");
+                data[3] = Convert.ToByte(ss[0], 16);
+                data[4] = Convert.ToByte(ss[1], 16);
+                data[5] = Convert.ToByte(ss[2], 16);
+                data[6] = Convert.ToByte(ss[3], 16);
+                data[8] = Convert.ToByte(DimmingBar.Value);
+            }
+            catch (Exception err)
+            {
+                appendMsg(err.Message);
+                foreach (string s in ss)
+                    appendMsg("*" + s);
+            }
+            if (serialAccess.WaitOne())
+            {
+                if (COMSerialPort.IsOpen)
+                {
+                    appendMsg(DimmingBar.Value.ToString());
+                    COMSerialPort.Write(data, 0, data.Length);
+                }
+                else
+                {
+                    appendMsg(COMSerialPort.PortName + " is closed.");
+                }
+                serialAccess.ReleaseMutex();
+            }
+        }
+
+        private void SetScheduler_bt_Click(object sender, EventArgs e)
+        {
+            byte[] data = { 0x07, 0x01, 0x02, 0xff, 0xff, 0xff, 0xff, 0x03, 
+                              0x08, 0x00, 0x0c, 0x00, 0xff,  // 2
+                              0x08, 0x00, 0x0c, 0x00, 0xff,  // 3
+                              0x08, 0x00, 0x0c, 0x00, 0xff,  // 4
+                              0x08, 0x00, 0x0c, 0x00, 0xff,  // 5
+                              0x08, 0x00, 0x0c, 0x00, 0xff,  // 6
+                              0x08, 0x00, 0x0c, 0x00, 0xff,  // 7
+                              0x08, 0x00, 0x0c, 0x00, 0xff,  // cn
+                              0xfe };
+            string[] ss = TargetID_cb.Text.Split(' ');
+            try
+            {
+                if (data.Length < 4)
+                    throw new Exception("Not enough ID length.");
+                data[3] = Convert.ToByte(ss[0], 16);
+                data[4] = Convert.ToByte(ss[1], 16);
+                data[5] = Convert.ToByte(ss[2], 16);
+                data[6] = Convert.ToByte(ss[3], 16);
+            }
+            catch (Exception err)
+            {
+                appendMsg(err.Message);
+                foreach (string s in ss)
+                    appendMsg("*" + s);
+            }
+            if (serialAccess.WaitOne())
+            {
+                if (COMSerialPort.IsOpen)
+                {
+                    appendMsg("Get ID: " + Bs2str(data));
+                    COMSerialPort.Write(data, 0, data.Length);
+                }
+                else
+                {
+                    appendMsg(COMSerialPort.PortName + " is closed.");
+                }
+                serialAccess.ReleaseMutex();
+            }
+        }
     }
+    public class SerialSetting_t
+    {
+        public string PortName;
+        public int Baudrate;
+        public int DataBits;
+        public StopBits StopBit;
+        public Parity Parity;
+    };
 }

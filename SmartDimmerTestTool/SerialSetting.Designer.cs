@@ -28,27 +28,27 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.Ports_cb = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.Baudrate_cb = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
-            this.comboBox4 = new System.Windows.Forms.ComboBox();
-            this.comboBox5 = new System.Windows.Forms.ComboBox();
+            this.DataBits_cb = new System.Windows.Forms.ComboBox();
+            this.StopBit_cb = new System.Windows.Forms.ComboBox();
+            this.Parity_cb = new System.Windows.Forms.ComboBox();
             this.SerialConnect_bt = new System.Windows.Forms.Button();
             this.SerialCancel_bt = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // comboBox1
+            // Ports_cb
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(71, 12);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 21);
-            this.comboBox1.TabIndex = 0;
+            this.Ports_cb.FormattingEnabled = true;
+            this.Ports_cb.Location = new System.Drawing.Point(71, 12);
+            this.Ports_cb.Name = "Ports_cb";
+            this.Ports_cb.Size = new System.Drawing.Size(121, 21);
+            this.Ports_cb.TabIndex = 0;
             // 
             // label1
             // 
@@ -68,29 +68,29 @@
             this.label2.TabIndex = 2;
             this.label2.Text = "Baudrate";
             // 
-            // comboBox2
+            // Baudrate_cb
             // 
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Items.AddRange(new object[] {
+            this.Baudrate_cb.FormattingEnabled = true;
+            this.Baudrate_cb.Items.AddRange(new object[] {
             "1200",
             "9600",
             "19200",
             "38400",
             "115200",
             "256000"});
-            this.comboBox2.Location = new System.Drawing.Point(71, 39);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(121, 21);
-            this.comboBox2.TabIndex = 3;
+            this.Baudrate_cb.Location = new System.Drawing.Point(71, 39);
+            this.Baudrate_cb.Name = "Baudrate_cb";
+            this.Baudrate_cb.Size = new System.Drawing.Size(121, 21);
+            this.Baudrate_cb.TabIndex = 3;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(12, 69);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(53, 13);
+            this.label3.Size = new System.Drawing.Size(45, 13);
             this.label3.TabIndex = 4;
-            this.label3.Text = "Data Size";
+            this.label3.Text = "Data Bit";
             // 
             // label4
             // 
@@ -110,42 +110,44 @@
             this.label5.TabIndex = 6;
             this.label5.Text = "Parity";
             // 
-            // comboBox3
+            // DataBits_cb
             // 
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Items.AddRange(new object[] {
-            "8 Bits"});
-            this.comboBox3.Location = new System.Drawing.Point(71, 66);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(121, 21);
-            this.comboBox3.TabIndex = 7;
+            this.DataBits_cb.FormattingEnabled = true;
+            this.DataBits_cb.Location = new System.Drawing.Point(71, 66);
+            this.DataBits_cb.Name = "DataBits_cb";
+            this.DataBits_cb.Size = new System.Drawing.Size(121, 21);
+            this.DataBits_cb.TabIndex = 7;
             // 
-            // comboBox4
+            // StopBit_cb
             // 
-            this.comboBox4.FormattingEnabled = true;
-            this.comboBox4.Items.AddRange(new object[] {
+            this.StopBit_cb.FormattingEnabled = true;
+            this.StopBit_cb.Items.AddRange(new object[] {
+            "None",
             "One",
             "One Point Five",
             "Two"});
-            this.comboBox4.Location = new System.Drawing.Point(71, 93);
-            this.comboBox4.Name = "comboBox4";
-            this.comboBox4.Size = new System.Drawing.Size(121, 21);
-            this.comboBox4.TabIndex = 8;
+            this.StopBit_cb.Location = new System.Drawing.Point(71, 93);
+            this.StopBit_cb.Name = "StopBit_cb";
+            this.StopBit_cb.Size = new System.Drawing.Size(121, 21);
+            this.StopBit_cb.TabIndex = 8;
             // 
-            // comboBox5
+            // Parity_cb
             // 
-            this.comboBox5.FormattingEnabled = true;
-            this.comboBox5.Items.AddRange(new object[] {
+            this.Parity_cb.FormattingEnabled = true;
+            this.Parity_cb.Items.AddRange(new object[] {
+            "Even",
+            "Mark",
             "None",
             "Odd",
-            "Even"});
-            this.comboBox5.Location = new System.Drawing.Point(71, 120);
-            this.comboBox5.Name = "comboBox5";
-            this.comboBox5.Size = new System.Drawing.Size(121, 21);
-            this.comboBox5.TabIndex = 9;
+            "Space"});
+            this.Parity_cb.Location = new System.Drawing.Point(71, 120);
+            this.Parity_cb.Name = "Parity_cb";
+            this.Parity_cb.Size = new System.Drawing.Size(121, 21);
+            this.Parity_cb.TabIndex = 9;
             // 
             // SerialConnect_bt
             // 
+            this.SerialConnect_bt.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.SerialConnect_bt.Location = new System.Drawing.Point(12, 158);
             this.SerialConnect_bt.Name = "SerialConnect_bt";
             this.SerialConnect_bt.Size = new System.Drawing.Size(75, 23);
@@ -173,16 +175,16 @@
             this.ClientSize = new System.Drawing.Size(209, 192);
             this.Controls.Add(this.SerialCancel_bt);
             this.Controls.Add(this.SerialConnect_bt);
-            this.Controls.Add(this.comboBox5);
-            this.Controls.Add(this.comboBox4);
-            this.Controls.Add(this.comboBox3);
+            this.Controls.Add(this.Parity_cb);
+            this.Controls.Add(this.StopBit_cb);
+            this.Controls.Add(this.DataBits_cb);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.comboBox2);
+            this.Controls.Add(this.Baudrate_cb);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.Ports_cb);
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(225, 230);
             this.MinimizeBox = false;
@@ -199,16 +201,16 @@
 
         #endregion
 
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox Ports_cb;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.ComboBox Baudrate_cb;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.ComboBox comboBox3;
-        private System.Windows.Forms.ComboBox comboBox4;
-        private System.Windows.Forms.ComboBox comboBox5;
+        private System.Windows.Forms.ComboBox DataBits_cb;
+        private System.Windows.Forms.ComboBox StopBit_cb;
+        private System.Windows.Forms.ComboBox Parity_cb;
         private System.Windows.Forms.Button SerialConnect_bt;
         private System.Windows.Forms.Button SerialCancel_bt;
     }
